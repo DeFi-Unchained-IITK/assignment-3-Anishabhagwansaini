@@ -1,0 +1,29 @@
+    // SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract SimpleBankSystem {
+    
+    mapping(address => uint) private sheet;
+
+    event AddingToBlockchain(address , address, uint256 );
+
+    function deposit() external payable  {
+        require(msg.value > 0, "Invalid");
+       sheet [msg.sender] += msg.value;
+        emit AddingToBlockchain(msg.sender, address(0), msg.value);
+    }
+
+    function transfer(address  receiver, uint256 amount) external {
+        require(sheet[msg.sender] >= amount, "Invalid");
+        sheet[msg.sender] -= amount;
+        emit AddingToBlockchain(msg.sender,  receiver, amount);
+    }
+
+    function withdraw(uint256 amount) external {
+        require(sheet[msg.sender] >= amount, "Invalid");
+        sheet[msg.sender] -= amount;
+        payable(msg.sender).transfer(amount);
+        emit AddingToBlockchain(msg.sender,  address(0), amount);
+    }
+
+}
