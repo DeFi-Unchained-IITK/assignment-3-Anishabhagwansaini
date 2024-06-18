@@ -1,0 +1,39 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import {Test, console} from"forge-std/Test.sol";
+import {Counter} from "../src/Voting.sol";
+
+contract VotingTest is Test  {
+    Voting public voting;
+    function setUp() public {
+        Voting = new voting();
+    }
+    function testAddCandidate() public {
+        voting.addCandidate("Cd 1");
+        assertEq(voting.NumberOfcandidates(),1);
+    }
+     function testRegisterVoter() public {
+        voting.registerVoter(msg.sender);
+        assertTrue(voting.votersMapping(msg.sender).RegisteredorNotRegistered );
+    }
+    function testVote() public {
+        voting.registerVoter(msg.sender);
+        voting.addCandidate("Cd 1");
+        voting.vote(0);
+        assertTrue(voting.votersMapping(msg.sender).VotedorNotVoted );
+    
+    function testGetVoteCount() public {
+        voting.addCandidate("Cd 1");
+        uint voteCount = voting.getVoteCount(0);
+       assertEq(voteCount, 1);
+    }
+    function testGetWinner() public {
+        voting.addCandidate("Cd 1");
+        voting.addCandidate("Cd 2");
+        voting.vote(0);
+        voting.vote(1);
+        string memory winner = voting.getWinner();
+        assertEq(winner, "Cd 1" );
+    }
+}
